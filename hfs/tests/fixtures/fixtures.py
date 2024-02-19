@@ -1,6 +1,6 @@
 import math
 import random
-
+import pytest
 import networkx as nx
 import numpy as np
 import pandas as pd
@@ -9,7 +9,7 @@ from info_gain.info_gain import info_gain, info_gain_ratio
 from hfs.helpers import get_columns_for_numpy_hierarchy
 from hfs.metrics import cosine_similarity
 
-
+@pytest.fixture(scope="module")
 def data1():
     X = np.array(
         [
@@ -26,7 +26,7 @@ def data1():
     y = np.array([0, 0, 0, 0, 1])
     return (X, y, hierarchy, columns)
 
-
+@pytest.fixture(scope="module")
 def data1_2():
     X = np.array(
         [
@@ -330,7 +330,7 @@ def result_gtd_selection2_2():
     support = np.array([False, False, True, False, True])
     return (result, support)
 
-
+@pytest.fixture(scope="module")
 def result_hill_selection_td():
     result = pd.DataFrame(
         [

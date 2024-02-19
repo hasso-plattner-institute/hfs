@@ -25,13 +25,14 @@ from .fixtures.fixtures import (
 
 
 @pytest.mark.parametrize(
-    "data, result",
+    "data",
     [
-        (data1(), result_hill_selection_td()),
-        (data1_2(), result_hill_selection_td()),
+        "data1",
+        "data1_2"
     ],
 )
-def test_top_down_selection(data, result):
+def test_top_down_selection(data_fixture, result_hill_selection_td):
+    data = request.getfixturevalue(data_fixture)
     X, y, hierarchy, columns = data
     expected, support = result
     selector = TopDownSelector(hierarchy, dataset_type="binary")
