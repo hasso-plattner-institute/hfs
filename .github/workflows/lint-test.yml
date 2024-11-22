@@ -13,6 +13,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: psf/black@stable
+        with:
+          options: "--line-length 90 hfs"
   test:
     runs-on: ubuntu-latest
     strategy:

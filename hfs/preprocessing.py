@@ -1,6 +1,7 @@
 """
 Sklearn compatible estimators for preprocessing hierarchical data.
 """
+
 import networkx as nx
 import numpy as np
 from networkx.algorithms.dag import ancestors
@@ -104,9 +105,7 @@ class HierarchicalPreprocessor(HierarchicalEstimator):
         # Check that the input is of the same shape as the one passed
         # during fit.
         if X.shape[1] != self.n_features_in_:
-            raise ValueError(
-                "Shape of input is different from what was seen" "in `fit`"
-            )
+            raise ValueError("Shape of input is different from what was seen" "in `fit`")
 
         X_ = self._add_columns(X)
         X_ = self._propagate_ones(X_)
