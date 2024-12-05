@@ -4,6 +4,8 @@ Sklearn compatible estimators for preprocessing hierarchical data.
 
 from __future__ import annotations
 
+from typing import Optional
+
 import networkx as nx
 import numpy as np
 from networkx.algorithms.dag import ancestors
@@ -22,7 +24,7 @@ class HierarchicalPreprocessor(HierarchicalEstimator):
     selection.
     """
 
-    def __init__(self, hierarchy: np.ndarray = None):
+    def __init__(self, hierarchy: Optional[np.ndarray] = None) -> None:
         """Initializes a HierarchicalPreprocessor.
 
         Parameters
@@ -31,7 +33,9 @@ class HierarchicalPreprocessor(HierarchicalEstimator):
                     The hierarchy graph as an adjacency matrix."""
         self.hierarchy = hierarchy
 
-    def fit(self, X, y=None, columns=None):
+    def fit(
+        self, X: np.ndarray, y: None = None, columns: list[int] = None
+    ) -> HierarchicalPreprocessor:
         """Sets the parameters for data transformation and prepares hierarchy.
 
         Following conditions need to be fulfilled for the feature
@@ -82,7 +86,7 @@ class HierarchicalPreprocessor(HierarchicalEstimator):
         self.is_fitted_ = True
         return self
 
-    def transform(self, X):
+    def transform(self, X: np.ndarray) -> np.ndarray:
         """Transforms dataset to fulfill conditions for feature selection.
 
         After transformation, if a feature is 1, all of its descendents are 1.
@@ -113,7 +117,7 @@ class HierarchicalPreprocessor(HierarchicalEstimator):
         X_ = self._propagate_ones(X_)
         return X_
 
-    def get_hierarchy(self):
+    def get_hierarchy(self) -> None:
         """Get the transformed hierarchy graph.
 
         Raises
@@ -129,7 +133,7 @@ class HierarchicalPreprocessor(HierarchicalEstimator):
         else:
             raise RuntimeError("Instance has not been fitted.")
 
-    def _extend_dag(self):
+    def _extend_dag(self) -> None:
         """Adds missing nodes to the hierarchy graph.
 
         For columns that no have a corresponding node in the hierarchy a
@@ -146,7 +150,7 @@ class HierarchicalPreprocessor(HierarchicalEstimator):
                     self._hierarchy.add_edge("ROOT", x)
                     self._columns[x] = x
 
-    def _shrink_dag(self):
+    def _shrink_dag(self) -> None:
         """Unnecessary nodes are removed from the hierarchy graph.
 
         Nodes are considered unnecessary if they do not have a corresponding
@@ -164,7 +168,7 @@ class HierarchicalPreprocessor(HierarchicalEstimator):
                 x_identifier=self._columns, digraph=self._hierarchy
             )
 
-    def _find_missing_columns(self):
+    def _find_missing_columns(self) -> None:
         """Finds nodes for which a column needs to be added to the dataset.
 
         These node names are added to self._columns and the corresponding
@@ -177,7 +181,7 @@ class HierarchicalPreprocessor(HierarchicalEstimator):
         ]
         self._columns.extend(missing_nodes)
 
-    def _add_columns(self, X):
+    def _add_columns(self, X: np.ndarray) -> np.ndarray:
         """Adds missing columns to the dataset.
 
         Missing columns are added and all values are set to 0.
@@ -199,7 +203,7 @@ class HierarchicalPreprocessor(HierarchicalEstimator):
                 X_ = np.concatenate([X_, np.zeros((num_rows, 1), dtype=int)], axis=1)
         return X_
 
-    def _propagate_ones(self, X):
+    def _propagate_ones(self, X: np.ndarray) -> np.ndarray:
         """Update the dataset to fulfill the 0-1-propagation rule..
 
         If a feature in the dataset in 1 all its descendents in the
@@ -229,7 +233,7 @@ class HierarchicalPreprocessor(HierarchicalEstimator):
                         X[row_index, index] = 1.0
         return X
 
-    def _adjust_node_names(self):
+    def _adjust_node_names(self) -> None:
         """Adjust node names in hierarchy and _columns.
 
         When nodes are removed from the hierarchy graph the mapping in
